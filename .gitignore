@@ -48,5 +48,5 @@ Temporary Items
 
 # Data folder
 # Ignore all data apart the file with a link to download them
-data
+data/*
 !data/readme.txt
