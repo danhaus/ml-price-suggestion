@@ -50,3 +50,6 @@ Temporary Items
 # Ignore all data apart the file with a link to download them
 data/*
 !data/readme.txt
+
+# Ignore Jupyter checkpoint
+**/*.ipynb_checkpoints/
