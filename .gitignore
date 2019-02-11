@@ -53,3 +53,6 @@ data/*
 
 # Ignore Jupyter checkpoint
 **/*.ipynb_checkpoints/
+
+# Ignore __pycache__ folders
+**/__pycache__
