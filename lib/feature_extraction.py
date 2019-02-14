@@ -32,4 +32,5 @@ class Pipeline(object):
 
 
 ### Feature extractors ###
+# Each feature extractor is expected to work only on one category (some may work on more)
 # Each feature extractor must contain extract method that returns

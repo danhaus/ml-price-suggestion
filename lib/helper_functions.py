@@ -22,21 +22,23 @@ def rmse(y_test, y_pred):
 	return np.sqrt(mean_squared_error(y_test, y_pred))
 
 def extract_n_random_cats(df, n, random_seed=None):
-    """
-    Parameters:
-        df: dataframe
-        n: number of random categories
-        random_seed: random seed to make the category selection predictiable (the same every run)
-    """
-    import numpy as np
-    unique_cats = df.category_name.unique()
-    np.random.seed(random_seed)
-    selected_cats = np.random.choice(unique_cats, size=n, replace=False)
-    return df.loc[df['category_name'].isin(selected_cats)]
+	"""
+	Parameters:
+		df: dataframe
+		n: number of random categories
+		random_seed: random seed to make the category selection predictiable (the same every run)
+	"""
+	import numpy as np
+	unique_cats = df.category_name.unique()
+	np.random.seed(random_seed)
+	selected_cats = np.random.choice(unique_cats, size=n, replace=False)
+	return df.loc[df['category_name'].isin(selected_cats)]
+
 
 print("Following functions has been loaded:\n")
 print("\
 replace_nan\n\
 rmse\n\
 extract_n_random_cats\n\
+tokenize\n\
 ")
