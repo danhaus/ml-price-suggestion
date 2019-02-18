@@ -1,3 +1,5 @@
+import pandas as pd
+
 # Pipeline infrastructure and classes to make methods for feature extraction
 # unified and easily reusable
 
@@ -34,3 +36,26 @@ class Pipeline(object):
 ### Feature extractors ###
 # Each feature extractor is expected to work only on one category (some may work on more)
 # Each feature extractor must contain extract method that returns
+
+class BaseFeatureExtractor(object):
+
+    def __init__(self):
+        pass
+
+    def extract_features(self, df):
+
+        X = pd.DataFrame(index=df.index)
+
+        # Length of name (title)
+        X['name_len'] = self.get_len(df, 'name')
+
+        # Length of item description
+        X['item_description_len'] = self.get_len(df, 'item_description')
+
+        return X
+
+
+    ### Help functions ###
+
+    def get_len(self, df, column_name):
+        return df[column_name].str.len()
