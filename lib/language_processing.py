@@ -52,7 +52,7 @@ class CountVectorizer(StemmedTokenizer):
         self.voc_set = self.create_voc_set() # keep set to speed up look ups
         self.voc_set_lst = list(self.voc_set) # this is the base for the word vectors
 
-    def extract_features(self, df):
+    def extract(self, df):
         # Create vocabulary set
         voc_set_lst = self.voc_set_lst
         X = pd.DataFrame(0, index=df.index, columns=voc_set_lst)
