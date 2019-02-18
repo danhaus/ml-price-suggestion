@@ -11,25 +11,26 @@ class Pipeline(object):
     Pipeline that extracts features using all provided feature extractors.
     It is expected to work with pandas DataFrames
     """
-    def __init__(self, feature_extractors):
+    def __init__(self, steps):
         """
-        feature_extractors: list of individual feature extractors which are
-            classes containing extract() method
+        steps: list of (name, feature_extractor) tuples (implementing extract) that are
+            chained and whose extract method is executed in that order
         """
         # list of feature extractor objects
-        self.feature_extractors = feature_extractors
+        self.steps = steps
+        self.named_steps = dict(self.steps)
 
-    def extract_features(df):
+    def extract_features(self, df):
         """
         Extract features using all feature extractors provided to this class.
         df: pandas DataFrame with existing features, extracted features will
             be added to this
         Returns: pandas DataFrame with both passed and extracted features
         """
-        df_extracted = None
-        for feature_extractor in self.feature_extractors:
-            df_extracted = feature_extractor.extract(df_extracted)
-        return df_extracted
+        X_lst = []
+        for (name, feature_extractor) in self.steps:
+            X_lst.append(feature_extractor.extract(df))
+        return pd.concat(X_lst, axis=1, sort=False)
 
 
 
@@ -42,7 +43,7 @@ class BaseFeatureExtractor(object):
     def __init__(self):
         pass
 
-    def extract_features(self, df):
+    def extract(self, df):
 
         X = pd.DataFrame(index=df.index)
 
@@ -51,6 +52,9 @@ class BaseFeatureExtractor(object):
 
         # Length of item description
         X['item_description_len'] = self.get_len(df, 'item_description')
+
+        # Item condition & shipping: copy item_condition_id
+        X[['item_condition_id', 'shipping']] = df.loc[:,['item_condition_id', 'shipping']]
 
         return X
 
