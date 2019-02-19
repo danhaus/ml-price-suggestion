@@ -55,7 +55,8 @@ class CountVectorizer(StemmedTokenizer):
     def extract(self, df):
         # Create vocabulary set
         voc_set_lst = self.voc_set_lst
-        X = pd.DataFrame(0, index=df.index, columns=voc_set_lst)
+        columns = [self.column_name + "_" + word for word in voc_set_lst]
+        X = pd.DataFrame(0, index=df.index, columns=columns)
         stemmed_tokens_d = self.tokenize(df, self.column_name)
         # Iterate through the ids
         for id_, word in stemmed_tokens_d.items():
@@ -63,7 +64,7 @@ class CountVectorizer(StemmedTokenizer):
             for word, count in word.items():
                 # If word in vocab, extract its count, otherwise do nothing
                 if word in self.voc_set:
-                    X.at[id_, word] = count
+                    X.at[id_, self.column_name + "_" + word] = count
         return X
 
     def create_voc_set(self):
