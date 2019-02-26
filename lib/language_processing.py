@@ -12,7 +12,7 @@ class StemmedTokenizer():
         df: DataFrame that contains column with text to be tokenized
         column_name: name of the column to be tokenized (string)
     	Stems and tokenizes all the text in the item description.
-    	Returns a dictionary that maps item id to a dictionary storing the stemmed word and its count (for the fiven item)
+    	Returns a dictionary that maps item id to a dictionary storing the stemmed words and their count (for the given item)
     	"""
     	from nltk.stem import PorterStemmer
     	from nltk.tokenize import sent_tokenize, word_tokenize
@@ -59,9 +59,9 @@ class CountVectorizer(StemmedTokenizer):
         X = pd.DataFrame(0, index=df.index, columns=columns)
         stemmed_tokens_d = self.tokenize(df, self.column_name)
         # Iterate through the ids
-        for id_, word in stemmed_tokens_d.items():
+        for id_, words in stemmed_tokens_d.items():
             # Iterate through words and their respective counts
-            for word, count in word.items():
+            for word, count in words.items():
                 # If word in vocab, extract its count, otherwise do nothing
                 if word in self.voc_set:
                     X.at[id_, self.column_name + "_" + word] = count
