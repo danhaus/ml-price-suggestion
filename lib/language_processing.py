@@ -2,11 +2,13 @@ from nltk.stem import PorterStemmer
 from nltk.tokenize import sent_tokenize, word_tokenize
 import pandas as pd
 
+
+
 class Tokenizer():
 
     def __init__(self, stem):
         """
-        stemming: Boolean, if words are stemmed, otherwise they are just converted to lowercase
+        stemming: Boolean, if words are processed, otherwise they are just converted to lowercase
         """
         self.stem = stem
         if self.stem:
@@ -21,9 +23,7 @@ class Tokenizer():
         Returns a dictionary that maps item id to a dictionary storing the processed words and their count (for the given item)
         """
 
-
         # Construct dictionary with processed words for every item in the category
-
         processed_tokens_d = {} # dict to store words and their count (as dict) under item id (train_id)
         # Iterate through the items
         for id_, text in df[column_name].iteritems():
@@ -44,6 +44,16 @@ class Tokenizer():
                 processed_tokens_d[id_] = words_d
         return processed_tokens_d
 
+    def create_voc_set(self, processed_tokens_d):
+        """
+        Create set of all the processed words
+        """
+        voc_set = set()
+        for item in processed_tokens_d.values():
+            for word in item:
+                voc_set.add(word)
+        return voc_set
+
 
 
 class CountVectorizer(Tokenizer):
@@ -61,8 +71,8 @@ class CountVectorizer(Tokenizer):
         self.stem = stem
         super().__init__(self.stem)
         self.column_name = column_name
-        self.train_stemmed_tokens = self.tokenize(df_train, self.column_name)
-        self.voc_set = self.create_voc_set() # keep set to speed up look ups
+        self.train_processed_tokens = self.tokenize(df_train, self.column_name)
+        self.voc_set = self.create_voc_set(self.train_processed_tokens) # keep set to speed up look ups
         self.voc_set_lst = list(self.voc_set) # this is the base for the word vectors
 
     def extract(self, df):
@@ -70,9 +80,9 @@ class CountVectorizer(Tokenizer):
         voc_set_lst = self.voc_set_lst
         columns = [self.column_name + "_" + word for word in voc_set_lst]
         X = pd.DataFrame(0, index=df.index, columns=columns, dtype='float32')
-        stemmed_tokens_d = self.tokenize(df, self.column_name)
+        processed_tokens_d = self.tokenize(df, self.column_name)
         # Iterate through the items (ids)
-        for id_, words in stemmed_tokens_d.items():
+        for id_, words in processed_tokens_d.items():
             # Get total number of words for given item as a normalisation factor
             if self.normalize:
                 word_len = 0
@@ -87,13 +97,17 @@ class CountVectorizer(Tokenizer):
                     X.at[id_, self.column_name + "_" + word] = count / word_len
         return X
 
-    def create_voc_set(self):
-        """
-        Create set of all the stemmed words
-        """
-        stemmed_tokens_d = self.train_stemmed_tokens
-        voc_set = set()
-        for item in stemmed_tokens_d.values():
-            for word in item:
-                voc_set.add(word)
-        return voc_set
+
+# 
+# class MeanEmbeddingVectorizer(Tokenizer):
+#
+#     def __init__(self, model, df_train, column_name):
+#         """
+#         model: trained word2vec model (usually stored in .word2vec file)
+#         df_train: DataFrame to be processed to create vocabulary set whose
+#             content will be used for tokenizing
+#         column_name: name of the column containg text to be tokenized
+#         """
+#         super().__init(stem=False) # initialize the Tokenizer without stemming
+#         self.model = model
+#         self.train_processed_tokens = self.tokenize(df_train, self.column_name)
