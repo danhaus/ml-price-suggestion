@@ -40,13 +40,16 @@ class StemmedTokenizer():
 
 class CountVectorizer(StemmedTokenizer):
 
-    def __init__(self, df_train, column_name):
+    def __init__(self, df_train, column_name, normalize):
         """
         df_train: DataFrame to be processed to create vocabulary set whose
             content will be used for tokenizing
+        normalize: Boolean, if True, each value of bag of words will be divided
+            by number of words for the item it belongs to
         column_name: name of the column containg text to be tokenized
         """
         self.df_train = df_train
+        self.normalize = normalize
         self.column_name = column_name
         self.train_stemmed_tokens = self.tokenize(df_train, self.column_name)
         self.voc_set = self.create_voc_set() # keep set to speed up look ups
@@ -61,9 +64,12 @@ class CountVectorizer(StemmedTokenizer):
         # Iterate through the items (ids)
         for id_, words in stemmed_tokens_d.items():
             # Get total number of words for given item as a normalisation factor
-            word_len = 0
-            for word, count in words.items():
-                word_len += count
+            if self.normalize:
+                word_len = 0
+                for word, count in words.items():
+                    word_len += count
+            else:
+                word_len = 1
             # Iterate through words and their respective counts
             for word, count in words.items():
                 # If word in vocab, extract its count, otherwise do nothing
