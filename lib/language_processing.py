@@ -113,7 +113,8 @@ class MeanEmbeddingVectorizer(Tokenizer):
 
     def __init__(self, model, df_train, column_name):
         """
-        model: trained word2vec model (usually stored in .word2vec file)
+        model: trained word2vec model (usually stored in .word2vec file) loaded
+            using gensim
         df_train: DataFrame to be processed to create vocabulary set whose
             content will be used for tokenizing
         column_name: name of the column containg text to be tokenized
