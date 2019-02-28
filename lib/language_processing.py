@@ -125,6 +125,9 @@ class MeanEmbeddingVectorizer(Tokenizer):
         self.train_processed_tokens = self.tokenize(self.df_train, self.column_name)
         self.voc_set_intersect = self.create_intersect_voc_set()
         self.voc_set_intersect_lst = list(self.voc_set_intersect)
+        ### Debugging variables ###
+        # self.voc_set_df_train = None
+        # self.voc_set_model = None
 
     def extract(self, df):
         voc_set_lst = self.voc_set_intersect_lst
@@ -148,6 +151,8 @@ class MeanEmbeddingVectorizer(Tokenizer):
         Creates a vocabulary set with only the words that are in both the model and df_train
         """
         voc_set_df_train = self.create_voc_set(self.train_processed_tokens)
+        self.voc_set_df_train = voc_set_df_train # for debugging
         voc_set_model = set(self.model.vocab.keys()) # set from model's vocabulary
+        self.voc_set_model = voc_set_model # for debugging
         voc_intersect = voc_set_df_train.intersection(voc_set_model) # get intersection of the two sets
         return voc_intersect
