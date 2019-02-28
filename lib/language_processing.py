@@ -14,7 +14,6 @@ class Tokenizer():
         if self.stem:
 	        self.ps = PorterStemmer()
 
-
     def tokenize(self, df, column_name):
         """
         df: DataFrame that contains column with text to be tokenized
@@ -57,6 +56,9 @@ class Tokenizer():
 
 
 class CountVectorizer(Tokenizer):
+    """
+    Class to implement bag of words as features.
+    """
 
     def __init__(self, df_train, column_name, stem, normalize):
         """
@@ -78,7 +80,8 @@ class CountVectorizer(Tokenizer):
     def extract(self, df):
         # Create vocabulary set
         voc_set_lst = self.voc_set_lst
-        columns = [self.column_name + "_" + word for word in voc_set_lst]
+        pre_name = "cv" + "_" + self.column_name + "_"
+        columns = [pre_name + word for word in voc_set_lst]
         X = pd.DataFrame(0, index=df.index, columns=columns, dtype='float32')
         processed_tokens_d = self.tokenize(df, self.column_name)
         # Iterate through the items (ids)
@@ -94,20 +97,57 @@ class CountVectorizer(Tokenizer):
             for word, count in words.items():
                 # If word in vocab, extract its count, otherwise do nothing
                 if word in self.voc_set:
-                    X.at[id_, self.column_name + "_" + word] = count / word_len
+                    X.at[id_, pre_name + word] = count / word_len
         return X
 
 
-# 
-# class MeanEmbeddingVectorizer(Tokenizer):
-#
-#     def __init__(self, model, df_train, column_name):
-#         """
-#         model: trained word2vec model (usually stored in .word2vec file)
-#         df_train: DataFrame to be processed to create vocabulary set whose
-#             content will be used for tokenizing
-#         column_name: name of the column containg text to be tokenized
-#         """
-#         super().__init(stem=False) # initialize the Tokenizer without stemming
-#         self.model = model
-#         self.train_processed_tokens = self.tokenize(df_train, self.column_name)
+
+class MeanEmbeddingVectorizer(Tokenizer):
+
+    """
+    Class to implement mean embedding as features as follows:
+    implementation is simmilar to the bag of words above, but instead of using
+    the word frequency, this uses mean of a word vector (e.g. mean over 300
+    dimension)
+    """
+
+    def __init__(self, model, df_train, column_name):
+        """
+        model: trained word2vec model (usually stored in .word2vec file)
+        df_train: DataFrame to be processed to create vocabulary set whose
+            content will be used for tokenizing
+        column_name: name of the column containg text to be tokenized
+        """
+        super().__init__(stem=False) # initialize the Tokenizer without stemming
+        self.model = model
+        self.df_train = df_train
+        self.column_name = column_name
+        self.train_processed_tokens = self.tokenize(self.df_train, self.column_name)
+        self.voc_set_intersect = self.create_intersect_voc_set()
+        self.voc_set_intersect_lst = list(self.voc_set_intersect)
+
+    def extract(self, df):
+        voc_set_lst = self.voc_set_intersect_lst
+        pre_name = "mev" + "_" + self.column_name + "_"
+        columns = [pre_name + word for word in voc_set_lst]
+        X = pd.DataFrame(0, index=df.index, columns=columns, dtype='float32')
+        processed_tokens_d = self.tokenize(df, self.column_name)
+        # Iterate through the items (ids)
+        for id_, words in processed_tokens_d.items():
+            # Iterate through words and their respective counts
+            for word, count in words.items():
+                if word in self.voc_set_intersect:
+                    X.at[id_, pre_name + word] = self.model[word].mean()
+        return X
+
+
+    ### Helper functions ###
+
+    def create_intersect_voc_set(self):
+        """
+        Creates a vocabulary set with only the words that are in both the model and df_train
+        """
+        voc_set_df_train = self.create_voc_set(self.train_processed_tokens)
+        voc_set_model = set(self.model.vocab.keys()) # set from model's vocabulary
+        voc_intersect = voc_set_df_train.intersection(voc_set_model) # get intersection of the two sets
+        return voc_intersect
