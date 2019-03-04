@@ -43,6 +43,7 @@ class Tokenizer():
                     else:
                         words_d[processed_word] += 1
             processed_tokens_d[id_] = words_d
+        # self.processed_tokens_d = processed_tokens_d # DEBUGGING
         return processed_tokens_d
 
     # TODO: Implement stopwords
@@ -155,9 +156,9 @@ class MeanEmbeddingVectorizer(Tokenizer):
         Creates a vocabulary set with only the words that are in both the model and df_train
         """
         voc_set_df_train = self.create_voc_set(self.train_processed_tokens)
-        self.voc_set_df_train = voc_set_df_train # for debugging
+        # self.voc_set_df_train = voc_set_df_train # for debugging
         voc_set_model = set(self.model.vocab.keys()) # set from model's vocabulary
-        self.voc_set_model = voc_set_model # for debugging
+        # self.voc_set_model = voc_set_model # for debugging
         voc_intersect = voc_set_df_train.intersection(voc_set_model) # get intersection of the two sets
         return voc_intersect
 
@@ -216,7 +217,6 @@ class PrincipalAxesExtractor(Tokenizer):
     def create_word_vectors(self, df):
         model = self.model
         processed_tokens_d = self.tokenize(df, self.column_name)
-        self.processed_tokens_d = processed_tokens_d # DEBUGGING
         word_vectors_dict = {} # {item_id: {word: word_vector}} only for words in the model voc
         for id_, words in processed_tokens_d.items():
             word_vectors_dict[id_] = {}
@@ -224,7 +224,7 @@ class PrincipalAxesExtractor(Tokenizer):
                 # Only get the word vector if it is in the model vocabulary
                 if word in model.vocab:
                     word_vectors_dict[id_][word] = model[word]
-        self.word_vectors = word_vectors_dict # DEBUGGING
+        # self.word_vectors = word_vectors_dict # DEBUGGING
         return word_vectors_dict
 
     def create_column_names(self, output_column_name_patern):
