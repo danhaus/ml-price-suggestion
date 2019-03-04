@@ -42,7 +42,7 @@ class Tokenizer():
                         words_d[processed_word] = 1
                     else:
                         words_d[processed_word] += 1
-                processed_tokens_d[id_] = words_d
+            processed_tokens_d[id_] = words_d
         return processed_tokens_d
 
     # TODO: Implement stopwords
