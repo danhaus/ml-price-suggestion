@@ -4,7 +4,6 @@ import pandas as pd
 from sklearn.decomposition import PCA
 
 
-
 class Tokenizer():
 
     def __init__(self, stem):
@@ -13,7 +12,7 @@ class Tokenizer():
         """
         self.stem = stem
         if self.stem:
-	        self.ps = PorterStemmer()
+            self.ps = PorterStemmer()
 
     def tokenize(self, df, column_name):
         """
@@ -25,7 +24,7 @@ class Tokenizer():
         """
 
         # Construct dictionary with processed words for every item in the category
-        processed_tokens_d = {} # dict to store words and their count (as dict) under item id (train_id)
+        processed_tokens_d = {}  # dict to store words and their count (as dict) under item id (train_id)
         # Iterate through the items
         for id_, text in df[column_name].iteritems():
             # Iterate through the sentences
@@ -59,7 +58,6 @@ class Tokenizer():
         return voc_set
 
 
-
 class CountVectorizer(Tokenizer):
     """
     Class to implement bag of words as features.
@@ -79,8 +77,8 @@ class CountVectorizer(Tokenizer):
         super().__init__(self.stem)
         self.column_name = column_name
         self.train_processed_tokens = self.tokenize(df_train, self.column_name)
-        self.voc_set = self.create_voc_set(self.train_processed_tokens) # keep set to speed up look ups
-        self.voc_set_lst = list(self.voc_set) # this is the base for the word vectors
+        self.voc_set = self.create_voc_set(self.train_processed_tokens)  # keep set to speed up look ups
+        self.voc_set_lst = list(self.voc_set)  # this is the base for the word vectors
 
     def extract(self, df):
         # Create vocabulary set
@@ -106,9 +104,7 @@ class CountVectorizer(Tokenizer):
         return X
 
 
-
 class MeanEmbeddingVectorizer(Tokenizer):
-
     """
     Class to implement mean embedding as features as follows:
     implementation is simmilar to the bag of words above, but instead of using
@@ -124,7 +120,7 @@ class MeanEmbeddingVectorizer(Tokenizer):
             content will be used for tokenizing
         column_name: name of the column containg text to be tokenized
         """
-        super().__init__(stem=False) # initialize the Tokenizer without stemming
+        super().__init__(stem=False)  # initialize the Tokenizer without stemming
         self.model = model
         self.df_train = df_train
         self.column_name = column_name
@@ -153,12 +149,11 @@ class MeanEmbeddingVectorizer(Tokenizer):
         Creates a vocabulary set with only the words that are in both the model and df_train
         """
         voc_set_df_train = self.create_voc_set(self.train_processed_tokens)
-        self.voc_set_df_train = voc_set_df_train # for analysis
-        voc_set_model = set(self.model.vocab.keys()) # set from model's vocabulary
-        self.voc_set_model = voc_set_model # for analysis
-        voc_intersect = voc_set_df_train.intersection(voc_set_model) # get intersection of the two sets
+        self.voc_set_df_train = voc_set_df_train  # for analysis
+        voc_set_model = set(self.model.vocab.keys())  # set from model's vocabulary
+        self.voc_set_model = voc_set_model  # for analysis
+        voc_intersect = voc_set_df_train.intersection(voc_set_model)  # get intersection of the two sets
         return voc_intersect
-
 
 
 class PrincipalAxesExtractor(Tokenizer):
@@ -171,6 +166,7 @@ class PrincipalAxesExtractor(Tokenizer):
     the columns with the data for each item / row. (The columns goes as:
     vector1_dir1, ...vector1_dirN, vector2_dir1, ...)
     """
+
     def __init__(self, model, n_directions, column_name):
         """
         model: trained word2vec model (usually stored in .word2vec file) loaded
@@ -179,7 +175,7 @@ class PrincipalAxesExtractor(Tokenizer):
             (most significat vectors from the U matrix after SVD decomposition)
         column_name: name of the column containg text to be processed
         """
-        super().__init__(stem=False) # initialize the Tokenizer without stemming
+        super().__init__(stem=False)  # initialize the Tokenizer without stemming
         self.model = model
         self.n_directions = n_directions
         self.column_name = column_name
@@ -214,7 +210,7 @@ class PrincipalAxesExtractor(Tokenizer):
     def create_word_vectors(self, df):
         model = self.model
         processed_tokens_d = self.tokenize(df, self.column_name)
-        word_vectors_dict = {} # {item_id: {word: word_vector}} only for words in the model voc
+        word_vectors_dict = {}  # {item_id: {word: word_vector}} only for words in the model voc
         for id_, words in processed_tokens_d.items():
             word_vectors_dict[id_] = {}
             for word in words.keys():
@@ -226,7 +222,7 @@ class PrincipalAxesExtractor(Tokenizer):
 
     def create_column_names(self, output_column_name_patern):
         n_directions = self.n_directions
-        vector_size = self.model.vector_size # number of dimensions of the model voc
+        vector_size = self.model.vector_size  # number of dimensions of the model voc
         output_column_names = []
         for comp_n in range(n_directions):
             for dim in range(vector_size):
