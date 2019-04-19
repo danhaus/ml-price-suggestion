@@ -33,8 +33,8 @@ class PriceClassifier(object):
 
         # Extend the lower bound of the first range to 0
         ranges[0] = (0, ranges[0][1])
-        # Extend the upper bound of the last range to infinity
-        ranges[-1] = (ranges[-1][0], np.inf)
+        # Extend the upper bound of the last range by 1
+        ranges[-1] = (ranges[-1][0], ranges[-1][1] + 1)
         return ranges
 
     def extract(self, df):
