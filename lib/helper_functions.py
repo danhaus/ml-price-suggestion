@@ -1,3 +1,5 @@
+import pickle
+
 def replace_nan(df):
 	"""
 	Replaces Nan in:
@@ -34,11 +36,13 @@ def extract_n_random_cats(df, n, random_seed=None):
 	selected_cats = np.random.choice(unique_cats, size=n, replace=False)
 	return df.loc[df['category_name'].isin(selected_cats)]
 
+def save_pickle(var, file_name):
+    """
+    var: variable to
+    file_name: name without the file extension (without .p)
+    """
+    pickle.dump( var, open( file_name + ".p", "wb" ) )
 
-print("Following functions has been loaded:\n")
-print("\
-replace_nan\n\
-rmse\n\
-extract_n_random_cats\n\
-tokenize\n\
-")
+def load_pickle(file_name):
+    return pickle.load( open( file_name + ".p", "rb" ) )
+
