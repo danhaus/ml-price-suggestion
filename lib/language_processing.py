@@ -6,13 +6,15 @@ from sklearn.decomposition import PCA
 
 class Tokenizer():
 
-    def __init__(self, stem):
+    def __init__(self, stem, stopwords):
         """
         stemming: Boolean, if words are processed, otherwise they are just converted to lowercase
         """
         self.stem = stem
+        self.stopwords = stopwords if stopwords is not None else []
         if self.stem:
             self.ps = PorterStemmer()
+            self.stemmed_stopwords = [self.ps.stem(sw) for sw in self.stopwords]
 
     def tokenize(self, df, column_name):
         """
@@ -26,6 +28,8 @@ class Tokenizer():
         # Construct dictionary with processed words for every item in the category
         processed_tokens_d = {}  # dict to store words and their count (as dict) under item id (train_id)
         # Iterate through the items
+        stopwords = self.stopwords
+        stemmed_stopwords = self.stemmed_stopwords if self.stem else None
         for id_, text in df[column_name].iteritems():
             # Iterate through the sentences
             words_d = {}
@@ -34,8 +38,12 @@ class Tokenizer():
                 for word in word_tokenize(sentence):
                     if self.stem:
                         processed_word = self.ps.stem(word)
+                        if processed_word in stemmed_stopwords:
+                            continue
                     else:
                         processed_word = word.lower()
+                        if processed_word in stopwords:
+                            continue
 
                     if processed_word not in words_d.keys():
                         words_d[processed_word] = 1
@@ -63,18 +71,20 @@ class CountVectorizer(Tokenizer):
     Class to implement bag of words as features.
     """
 
-    def __init__(self, df_train, column_name, stem, normalize):
+    def __init__(self, df_train, column_name, stem, normalize, stopwords):
         """
         df_train: DataFrame to be processed to create vocabulary set whose
             content will be used for tokenizing
         normalize: Boolean, if True, each value of bag of words will be divided
             by number of words for the item it belongs to
         column_name: name of the column containg text to be tokenized
+        stopwords: list of stopwords or None
         """
         self.df_train = df_train
         self.normalize = normalize
         self.stem = stem
-        super().__init__(self.stem)
+        self.stopwords = stopwords
+        super().__init__(self.stem, self.stopwords)
         self.column_name = column_name
         self.train_processed_tokens = self.tokenize(df_train, self.column_name)
         self.voc_set = self.create_voc_set(self.train_processed_tokens)  # keep set to speed up look ups
