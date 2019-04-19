@@ -7,5 +7,6 @@
 module load conda/py3-latest
 
 source activate IP
+pip install pandas
 
 python bag_of_words_random_forest.py
