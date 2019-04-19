@@ -7,6 +7,8 @@ import language_processing as lp
 import feature_extraction as fe
 import price_classifier
 from sklearn.model_selection import train_test_split
+import nltk
+nltk.download('punkt')
 
 
 PATH = "../../../data/"
