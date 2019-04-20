@@ -1,3 +1,4 @@
+print("Script started")
 import pandas as pd
 from tqdm import tqdm
 import sys
@@ -5,6 +6,8 @@ sys.path.append("../../../lib") # Adds higher directory to python modules path.
 import helper_functions as hf
 import language_processing as lp
 import feature_extraction as fe
+
+print("Import successful")
 
 PATH = "../../../data/"
 data_full = pd.read_csv(f'{PATH}train.tsv', sep='\t')
