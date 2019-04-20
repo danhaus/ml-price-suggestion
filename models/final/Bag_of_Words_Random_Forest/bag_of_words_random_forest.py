@@ -101,7 +101,9 @@ for gp in tqdm(list(ParameterGrid(NLP_param_grid))):
         print("New best score achieved", current_result['best_score_'])
         optimisation_result = current_result
 
-# Add the labels
+# Add the parameters for grid search and the labels
+optimisation_result['NLP_param_grid'] = NLP_param_grid
+optimisation_result['grid_search_param_grid'] = grid_search_param_grid
 optimisation_result['y_train'] = y_train
 optimisation_result['y_test'] = y_test
 
