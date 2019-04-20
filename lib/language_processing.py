@@ -83,8 +83,7 @@ class CountVectorizer(Tokenizer):
         self.df_train = df_train
         self.normalize = normalize
         self.stem = stem
-        self.stopwords = stopwords
-        super().__init__(self.stem, self.stopwords)
+        super().__init__(self.stem, stopwords)
         self.column_name = column_name
         self.train_processed_tokens = self.tokenize(df_train, self.column_name)
         self.voc_set = self.create_voc_set(self.train_processed_tokens)  # keep set to speed up look ups
@@ -134,7 +133,6 @@ class MeanEmbeddingVectorizer(Tokenizer):
         self.model = model
         self.df_train = df_train
         self.column_name = column_name
-        self.stopwords = stopwords
         self.train_processed_tokens = self.tokenize(self.df_train, self.column_name)
         self.voc_set_intersect = self.create_intersect_voc_set()
         self.voc_set_intersect_lst = list(self.voc_set_intersect)
