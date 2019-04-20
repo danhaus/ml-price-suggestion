@@ -1,4 +1,4 @@
-import dill as pickle
+import pickle
 
 def replace_nan(df):
 	"""
