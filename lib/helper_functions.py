@@ -9,7 +9,6 @@ def replace_nan(df):
 	Returns new dataframe with these replacements
 	"""
 	df_c = df.copy()
-	import pandas as pd
 	df_c.category_name = df_c.category_name.fillna('No Category')
 	df_c.brand_name = df_c.brand_name.fillna('No Brand')
 	df_c.item_description = df_c.item_description.fillna('No description yet')
