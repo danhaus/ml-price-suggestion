@@ -101,9 +101,12 @@ for gp in tqdm(list(ParameterGrid(NLP_param_grid))):
         print("New best score achieved", current_result['best_score_'])
         optimisation_result = current_result
 
-# Add the parameters for grid search and the labels
+# Add the parameters for grid search and the training data
+print("Optimization done, adding additional data into optimisation_result before saving pickle...")
 optimisation_result['NLP_param_grid'] = NLP_param_grid
 optimisation_result['grid_search_param_grid'] = grid_search_param_grid
+optimisation_result['df_train'] = df_train
+optimisation_result['df_test'] = df_test
 optimisation_result['y_train'] = y_train
 optimisation_result['y_test'] = y_test
 
