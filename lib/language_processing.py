@@ -117,23 +117,24 @@ class CountVectorizer(Tokenizer):
 class MeanEmbeddingVectorizer(Tokenizer):
     """
     Class to implement mean embedding as features as follows:
-    implementation is simmilar to the bag of words above, but instead of using
+    implementation is simillar to the bag of words above, but instead of using
     the word frequency, this uses mean of a word vector (e.g. mean over 300
     dimension)
     """
 
-    def __init__(self, model, df_train, column_name):
+    def __init__(self, model, df_train, column_name, stopwords):
         """
         model: trained word2vec model (usually stored in .word2vec file) loaded
             using gensim
         df_train: DataFrame to be processed to create vocabulary set whose
             content will be used for tokenizing
-        column_name: name of the column containg text to be tokenized
+        column_name: name of the column containing text to be tokenized
         """
-        super().__init__(stem=False)  # initialize the Tokenizer without stemming
+        super().__init__(stem=False, stopwords=stopwords)  # initialize the Tokenizer without stemming
         self.model = model
         self.df_train = df_train
         self.column_name = column_name
+        self.stopwords = stopwords
         self.train_processed_tokens = self.tokenize(self.df_train, self.column_name)
         self.voc_set_intersect = self.create_intersect_voc_set()
         self.voc_set_intersect_lst = list(self.voc_set_intersect)
