@@ -60,14 +60,14 @@ for gp in tqdm(list(ParameterGrid(NLP_param_grid))):
 
     # Create pipeline
     pipe = fe.Pipeline(steps=[
-        ('stemmed_tokens_item_desc', lp.CountVectorizer(
+        ('item_desc', lp.CountVectorizer(
             df_train,
             'item_description',
             stem=gp['desc_stem'],
             normalize=gp['desc_norm'],
             stopwords=gp['desc_sw']
         )),
-        ('stemmed_tokens_name', lp.CountVectorizer(
+        ('name', lp.CountVectorizer(
             df_train,
             'name',
             stem=gp['name_stem'],
