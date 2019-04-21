@@ -48,7 +48,7 @@ from sklearn.model_selection import ParameterGrid
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import GridSearchCV
 
-n_directions_lst = [2, 3, 5, 10, 15, 20, 30, 40, 50]
+n_directions_lst = [2, 3, 5, 10, 15, 20, 30]
 NLP_param_grid = {
     'desc_sw': [stopwords, None], 'desc_stem': [True, False], 'desc_n_dirs': n_directions_lst,
     'name_sw': [stopwords, None], 'name_stem': [True, False], 'name_n_dirs': n_directions_lst,
