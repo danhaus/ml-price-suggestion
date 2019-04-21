@@ -37,7 +37,9 @@ df_train, df_test, y_train, y_test = train_test_split(cat_df, y, test_size=0.20,
 # Load the word2vec model
 from gensim.models import KeyedVectors
 filename = f'{PATH}glove/glove.840B.300d.txt.word2vec' # GloVe Common Crowl
+filename_stemmed = f'{PATH}glove/stemmed_glove.840B.300d.txt.word2vec' # GloVe Common Crowl
 model = KeyedVectors.load_word2vec_format(filename, binary=False)
+stemmed_model = KeyedVectors.load_word2vec_format(filename_stemmed, binary=False)
 
 
 
@@ -48,7 +50,9 @@ from sklearn.model_selection import GridSearchCV
 
 NLP_param_grid = {
     'desc_sw': [stopwords, None],
+    'desc_model': [model, stemmed_model],
     'name_sw': [stopwords, None],
+    'name_model': [model, stemmed_model],
 }
 
 grid_search_param_grid = {
@@ -65,13 +69,13 @@ for gp in tqdm(list(ParameterGrid(NLP_param_grid))):
     # Create pipeline
     pipe = fe.Pipeline(steps=[
         ('item_desc', lp.MeanEmbeddingVectorizer(
-            model,
+            gp['desc_model'],
             df_train,
             'item_description',
             stopwords=gp['desc_sw']
         )),
         ('name', lp.MeanEmbeddingVectorizer(
-            model,
+            gp['name_model'],
             df_train,
             'name',
             stopwords=gp['name_sw']
