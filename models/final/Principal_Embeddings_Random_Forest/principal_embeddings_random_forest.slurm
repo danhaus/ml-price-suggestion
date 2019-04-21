@@ -6,4 +6,4 @@
 
 module load conda/py3-latest
 
-python principal_axes_random_forest.py
+python principal_embeddings_random_forest.py

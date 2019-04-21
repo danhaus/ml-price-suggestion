@@ -67,13 +67,13 @@ for gp in tqdm(list(ParameterGrid(NLP_param_grid))):
 
     # Create pipeline
     pipe = fe.Pipeline(steps=[
-        ('item_desc', lp.PrincipalAxesExtractor(
+        ('item_desc', lp.PrincipalEmbeddingExtractor(
             model=stemmed_model if gp['desc_stem'] else model,
             n_directions=gp['desc_n_dirs'],
             column_name='item_description',
             stopwords=gp['desc_sw'],
         )),
-        ('name', lp.PrincipalAxesExtractor(
+        ('name', lp.PrincipalEmbeddingExtractor(
             model=stemmed_model if gp['name_stem'] else model,
             n_directions=gp['name_n_dirs'],
             column_name='name',
