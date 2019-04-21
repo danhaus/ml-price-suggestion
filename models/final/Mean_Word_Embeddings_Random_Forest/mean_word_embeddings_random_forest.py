@@ -73,7 +73,7 @@ for gp in tqdm(list(ParameterGrid(NLP_param_grid))):
             stopwords=gp['desc_sw']
         )),
         ('name', lp.MeanEmbeddingVectorizer(
-            stemmed_model if gp['name_model'] else model,
+            stemmed_model if gp['name_stem'] else model,
             df_train,
             'name',
             stopwords=gp['name_sw']
