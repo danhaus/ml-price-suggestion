@@ -49,10 +49,8 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import GridSearchCV
 
 NLP_param_grid = {
-    'desc_sw': [stopwords, None],
-    'desc_model': [model, stemmed_model],
-    'name_sw': [stopwords, None],
-    'name_model': [model, stemmed_model],
+    'desc_sw': [stopwords, None], 'desc_stem': [True, False],
+    'name_sw': [stopwords, None], 'name_stem': [True, False],
 }
 
 grid_search_param_grid = {
@@ -69,13 +67,13 @@ for gp in tqdm(list(ParameterGrid(NLP_param_grid))):
     # Create pipeline
     pipe = fe.Pipeline(steps=[
         ('item_desc', lp.MeanEmbeddingVectorizer(
-            gp['desc_model'],
+            stemmed_model if gp['desc_stem'] else model,
             df_train,
             'item_description',
             stopwords=gp['desc_sw']
         )),
         ('name', lp.MeanEmbeddingVectorizer(
-            gp['name_model'],
+            stemmed_model if gp['name_model'] else model,
             df_train,
             'name',
             stopwords=gp['name_sw']
