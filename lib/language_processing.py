@@ -116,7 +116,7 @@ class CountVectorizer(Tokenizer):
 class MeanEmbeddingVectorizer(Tokenizer):
     """
     Class to implement mean embedding as features as follows:
-    implementation is simillar to the bag of words above, but instead of using
+    implementation is similar to the bag of words above, but instead of using
     the word frequency, this uses mean of a word vector (e.g. mean over 300
     dimension)
     """
@@ -128,6 +128,7 @@ class MeanEmbeddingVectorizer(Tokenizer):
         df_train: DataFrame to be processed to create vocabulary set whose
             content will be used for tokenizing
         column_name: name of the column containing text to be tokenized
+        stopwords: list of stopwords or None
         """
         super().__init__(stem=False, stopwords=stopwords)  # initialize the Tokenizer without stemming
         self.model = model
@@ -165,7 +166,7 @@ class MeanEmbeddingVectorizer(Tokenizer):
         return voc_intersect
 
 
-class PrincipalAxesExtractor(Tokenizer):
+class PrincipalEmbeddingExtractor(Tokenizer):
     """
     Tokenizes text, and uses word2vec pretrain model to create a matrix
     with a shape of (n_of_model_dimensions, n_of_words). Then it applies SVD
@@ -176,15 +177,16 @@ class PrincipalAxesExtractor(Tokenizer):
     vector1_dir1, ...vector1_dirN, vector2_dir1, ...)
     """
 
-    def __init__(self, model, n_directions, column_name):
+    def __init__(self, model, n_directions, column_name, stopwords):
         """
         model: trained word2vec model (usually stored in .word2vec file) loaded
             using gensim
         n_directions: number of most significant directions in variation to select
             (most significat vectors from the U matrix after SVD decomposition)
         column_name: name of the column containg text to be processed
+        stopwords: list of stopwords or None
         """
-        super().__init__(stem=False)  # initialize the Tokenizer without stemming
+        super().__init__(stem=False, stopwords=stopwords)  # initialize the Tokenizer without stemming
         self.model = model
         self.n_directions = n_directions
         self.column_name = column_name
@@ -194,7 +196,6 @@ class PrincipalAxesExtractor(Tokenizer):
 
     def extract(self, df):
         pca = self.pca
-        output_column_name_patern = self.output_column_name_patern
         n_directions = self.n_directions
         X = pd.DataFrame(0, index=df.index, columns=self.output_column_names, dtype='float32')
         # Get word vectors
