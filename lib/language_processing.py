@@ -1,6 +1,7 @@
 from nltk.stem import PorterStemmer
 from nltk.tokenize import sent_tokenize, word_tokenize
 import pandas as pd
+import numpy as np
 from sklearn.decomposition import TruncatedSVD
 
 
@@ -210,9 +211,19 @@ class PrincipalEmbeddingExtractor(Tokenizer):
             word_vectors_df = pd.DataFrame.from_dict(words)
             # If the number of words is too small to perform SVD, leave all the values
             # set to zeros and skip to the next id_
-            if word_vectors_df.shape[1] < n_directions:
-                continue
             word_vectors_df_transposed = word_vectors_df.transpose()
+            n_words = word_vectors_df.shape[1]
+            # If there are less words than the required number of directions, extract the number of components
+            # that is equal to the number of words and fill the rest by zeros
+            if n_words < n_directions:
+                # If number of words is zero, leave all the components zero
+                if n_words == 0:
+                    continue
+                n_columns_to_fill = n_directions - n_words
+                svd_reduced = TruncatedSVD(n_components=n_words)
+                svd_reduced.fit(word_vectors_df_transposed)
+                X.loc[id_] = np.concatenate([svd_reduced.components_.ravel(), np.array(self.model.vector_size * n_columns_to_fill * [0])])
+                continue
             svd.fit(word_vectors_df_transposed)
             X.loc[id_] = svd.components_.ravel()
         return X
