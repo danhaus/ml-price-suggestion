@@ -1,7 +1,7 @@
 from nltk.stem import PorterStemmer
 from nltk.tokenize import sent_tokenize, word_tokenize
 import pandas as pd
-from sklearn.decomposition import PCA
+from sklearn.decomposition import TruncatedSVD
 
 
 class Tokenizer():
@@ -53,7 +53,6 @@ class Tokenizer():
         # self.processed_tokens_d = processed_tokens_d # DEBUGGING
         return processed_tokens_d
 
-    # TODO: Implement stopwords
 
     def create_voc_set(self, processed_tokens_d):
         """
@@ -190,12 +189,12 @@ class PrincipalEmbeddingExtractor(Tokenizer):
         self.model = model
         self.n_directions = n_directions
         self.column_name = column_name
-        self.pca = PCA(n_components=n_directions)
+        self.svd = TruncatedSVD(n_components=n_directions)
         self.output_column_name_patern = 'princ_axis_{}_dim_{}'
         self.output_column_names = self.create_column_names(self.output_column_name_patern)
 
     def extract(self, df):
-        pca = self.pca
+        svd = self.svd
         n_directions = self.n_directions
         X = pd.DataFrame(0, index=df.index, columns=self.output_column_names, dtype='float32')
         # Get word vectors
@@ -206,13 +205,13 @@ class PrincipalEmbeddingExtractor(Tokenizer):
             # number of rows = model.vector_size
             # number of columns = number of words
             word_vectors_df = pd.DataFrame.from_dict(words)
-            # If the number of words is too small to perform pca, leave all the values
+            # If the number of words is too small to perform SVD, leave all the values
             # set to zeros and skip to the next id_
             if word_vectors_df.shape[1] < n_directions:
                 continue
             word_vectors_df_transposed = word_vectors_df.transpose()
-            pca.fit(word_vectors_df_transposed)
-            X.loc[id_] = pca.components_.ravel()
+            svd.fit(word_vectors_df_transposed)
+            X.loc[id_] = svd.components_.ravel()
         return X
 
     ### Helper methods ###
