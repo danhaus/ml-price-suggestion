@@ -48,7 +48,7 @@ from sklearn.model_selection import ParameterGrid
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import GridSearchCV
 
-n_directions_lst = [2, 3, 5, 10]
+n_directions_lst = [1, 2, 3, 4]
 NLP_param_grid = {
     'desc_sw': [stopwords, None], 'desc_stem': [True, False], 'desc_n_dirs': n_directions_lst,
     'name_sw': [stopwords, None], 'name_stem': [True, False], 'name_n_dirs': n_directions_lst,
@@ -101,6 +101,7 @@ for gp in tqdm(list(ParameterGrid(NLP_param_grid))):
     }
 
     if optimisation_result is None:
+        print("Current score", current_result['best_score_'])
         optimisation_result = current_result
         continue
 
