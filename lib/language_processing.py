@@ -74,6 +74,7 @@ class CountVectorizer(Tokenizer):
         """
         df_train: DataFrame to be processed to create vocabulary set whose
             content will be used for tokenizing
+        stem: apply stemming, boolean
         normalize: Boolean, if True, each value of bag of words will be divided
             by number of words for the item it belongs to
         column_name: name of the column containg text to be tokenized
@@ -120,16 +121,17 @@ class MeanEmbeddingVectorizer(Tokenizer):
     dimension)
     """
 
-    def __init__(self, model, df_train, column_name, stopwords):
+    def __init__(self, model, df_train, column_name, stem, stopwords):
         """
         model: trained word2vec model (usually stored in .word2vec file) loaded
-            using gensim
+            using gensim, if stem=True, then the model has to contain stemmed words
         df_train: DataFrame to be processed to create vocabulary set whose
             content will be used for tokenizing
         column_name: name of the column containing text to be tokenized
+        stem: apply stemming, boolean
         stopwords: list of stopwords or None
         """
-        super().__init__(stem=False, stopwords=stopwords)  # initialize the Tokenizer without stemming
+        super().__init__(stem=stem, stopwords=stopwords)  # initialize the Tokenizer without stemming
         self.model = model
         self.df_train = df_train
         self.column_name = column_name
@@ -176,16 +178,17 @@ class PrincipalEmbeddingExtractor(Tokenizer):
     vector1_dir1, ...vector1_dirN, vector2_dir1, ...)
     """
 
-    def __init__(self, model, n_directions, column_name, stopwords):
+    def __init__(self, model, n_directions, column_name, stem, stopwords):
         """
         model: trained word2vec model (usually stored in .word2vec file) loaded
-            using gensim
+            using gensim, if stem=True, then the model has to contain stemmed words
         n_directions: number of most significant directions in variation to select
             (most significat vectors from the U matrix after SVD decomposition)
         column_name: name of the column containg text to be processed
+        stem: apply stemming, boolean
         stopwords: list of stopwords or None
         """
-        super().__init__(stem=False, stopwords=stopwords)  # initialize the Tokenizer without stemming
+        super().__init__(stem=stem, stopwords=stopwords)  # initialize the Tokenizer without stemming
         self.model = model
         self.n_directions = n_directions
         self.column_name = column_name

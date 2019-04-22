@@ -71,12 +71,14 @@ for gp in tqdm(list(ParameterGrid(NLP_param_grid))):
             model=stemmed_model if gp['desc_stem'] else model,
             n_directions=gp['desc_n_dirs'],
             column_name='item_description',
+            stem=gp['desc_stem'],
             stopwords=gp['desc_sw'],
         )),
         ('name', lp.PrincipalEmbeddingExtractor(
             model=stemmed_model if gp['name_stem'] else model,
             n_directions=gp['name_n_dirs'],
             column_name='name',
+            stem=gp['name_stem'],
             stopwords=gp['name_sw'],
         )),
     ])
