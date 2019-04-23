@@ -48,14 +48,16 @@ from sklearn.model_selection import ParameterGrid
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import GridSearchCV
 
-n_directions_lst = [1, 2, 3, 4]
+# n_directions_lst = [1, 2, 3, 4]  # first run
+n_directions_lst = [4, 7, 10]  # second run
 NLP_param_grid = {
     'desc_sw': [stopwords, None], 'desc_stem': [True, False], 'desc_n_dirs': n_directions_lst,
     'name_sw': [stopwords, None], 'name_stem': [True, False], 'name_n_dirs': n_directions_lst,
 }
 
 grid_search_param_grid = {
-    'n_estimators': [1, 3, 10, 30, 100, 300, 1000],
+    # 'n_estimators': [1, 3, 10, 30, 100, 300, 1000],  # first run
+    'n_estimators': [100, 300, 1000],  # second run
     'max_depth': [1, 3, 10, 30, 100],
     'min_samples_leaf': [1, 3, 10],
     'random_state': [42]
@@ -121,5 +123,5 @@ optimisation_result['y_train'] = y_train
 optimisation_result['y_test'] = y_test
 
 print("Saving pickle")
-hf.save_pickle(optimisation_result, f'{PATH}pickle/PE_optimisation_result')
+hf.save_pickle(optimisation_result, f'{PATH}pickle/second_PE_optimisation_result')
 print("Done")
