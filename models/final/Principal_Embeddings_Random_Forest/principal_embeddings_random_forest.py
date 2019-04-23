@@ -36,8 +36,8 @@ df_train, df_test, y_train, y_test = train_test_split(cat_df, y, test_size=0.20,
 
 # Load the word2vec model
 from gensim.models import KeyedVectors
-filename = f'{PATH}glove/glove.840B.300d.txt.word2vec' # GloVe Common Crowl
-filename_stemmed = f'{PATH}glove/stemmed_glove.840B.300d.txt.word2vec' # GloVe Common Crowl
+filename = f'{PATH}glove/glove.6B.300d.txt.word2vec' # GloVe Common Crowl
+filename_stemmed = f'{PATH}glove/stemmed_glove.6B.300d.txt.word2vec' # GloVe Common Crowl
 model = KeyedVectors.load_word2vec_format(filename, binary=False)
 stemmed_model = KeyedVectors.load_word2vec_format(filename_stemmed, binary=False)
 
@@ -48,16 +48,16 @@ from sklearn.model_selection import ParameterGrid
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import GridSearchCV
 
-# n_directions_lst = [1, 2, 3, 4]  # first run
-n_directions_lst = [4, 7, 10]  # second run
+n_directions_lst = [1, 2, 3, 4]  # first run
+# n_directions_lst = [4, 7, 10]  # second run
 NLP_param_grid = {
     'desc_sw': [stopwords, None], 'desc_stem': [True, False], 'desc_n_dirs': n_directions_lst,
     'name_sw': [stopwords, None], 'name_stem': [True, False], 'name_n_dirs': n_directions_lst,
 }
 
 grid_search_param_grid = {
-    # 'n_estimators': [1, 3, 10, 30, 100, 300, 1000],  # first run
-    'n_estimators': [100, 300, 1000],  # second run
+    'n_estimators': [1, 3, 10, 30, 100, 300, 1000],  # first run
+    # 'n_estimators': [100, 300, 1000],  # second run
     'max_depth': [1, 3, 10, 30, 100],
     'min_samples_leaf': [1, 3, 10],
     'random_state': [42]
@@ -123,5 +123,5 @@ optimisation_result['y_train'] = y_train
 optimisation_result['y_test'] = y_test
 
 print("Saving pickle")
-hf.save_pickle(optimisation_result, f'{PATH}pickle/second_PE_optimisation_result')
+hf.save_pickle(optimisation_result, f'{PATH}pickle/300d_PE_optimisation_result')
 print("Done")
