@@ -55,7 +55,8 @@ NLP_param_grid = {
 
 grid_search_param_grid = {
     'n_estimators': [1, 3, 10, 30, 100, 300, 1000],
-    'max_depth': [1, 3, 10, 30, 100],
+    # 'max_depth': [1, 3, 10, 30, 100],  # first run
+    'max_depth': [30, 100, 300, 1000],  # second run
     'min_samples_leaf': [1, 3, 10],
     'random_state': [42]
 }
@@ -119,5 +120,5 @@ optimisation_result['y_train'] = y_train
 optimisation_result['y_test'] = y_test
 
 print("Saving pickle")
-hf.save_pickle(optimisation_result, f'{PATH}pickle/300d_MWE_optimisation_result')
+hf.save_pickle(optimisation_result, f'{PATH}pickle/second_300d_MWE_optimisation_result')
 print("Done")
