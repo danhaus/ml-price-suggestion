@@ -36,12 +36,12 @@ df_train, df_test, y_train, y_test = train_test_split(cat_df, y, test_size=0.20,
 
 # Load the word2vec model
 from gensim.models import KeyedVectors
-filename = f'{PATH}glove/glove.840B.300d.txt.word2vec' # GloVe Common Crowl
-filename_stemmed = f'{PATH}glove/stemmed_glove.840B.300d.txt.word2vec' # GloVe Common Crowl
+filename = f'{PATH}glove/glove.6B.300d.txt.word2vec' # GloVe Common Crowl
+filename_stemmed = f'{PATH}glove/stemmed_glove.6B.300d.txt.word2vec' # GloVe Common Crowl
 model = KeyedVectors.load_word2vec_format(filename, binary=False)
 stemmed_model = KeyedVectors.load_word2vec_format(filename_stemmed, binary=False)
 
-
+print("Models loaded")
 
 # Run grid search
 from sklearn.model_selection import ParameterGrid
@@ -119,5 +119,5 @@ optimisation_result['y_train'] = y_train
 optimisation_result['y_test'] = y_test
 
 print("Saving pickle")
-hf.save_pickle(optimisation_result, f'{PATH}pickle/MWE_optimisation_result')
+hf.save_pickle(optimisation_result, f'{PATH}pickle/300d_MWE_optimisation_result')
 print("Done")
