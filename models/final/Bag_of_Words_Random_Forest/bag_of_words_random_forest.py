@@ -92,7 +92,7 @@ for gp in tqdm(list(ParameterGrid(NLP_param_grid))):
         'best_estimator_': clf.best_estimator_,
         'X_train': X_train,
         'X_test': X_test,
-        'pipe': pipe,
+        # 'pipe': pipe,
     }
 
     if optimisation_result is None:
