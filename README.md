@@ -16,7 +16,7 @@ in your terminal while in the main directory (`ml-price_suggestion`), which inst
 
 
 # Usage
-The main logic for the three NLP models is developed in the `lib/language_processing.py` file, which is thoroughly documented. The `models/final` directory contains three Python scripts that run a grid search on the three NLP models to find the best text pre-processing parameters and best Random Forest's hyper-parameters. These are then saved into a [pickle](https://docs.python.org/3/library/pickle.html).
+The main logic for the three NLP models is developed in the `lib/language_processing.py` file, which is thoroughly documented. The novel method, PE, is implemented through the `PrincipalEmbeddingExtractor` class. The `models/final` directory contains three Python scripts that run a grid search on the three NLP models to find the best text pre-processing parameters and best Random Forest's hyper-parameters. These are then saved into a [pickle](https://docs.python.org/3/library/pickle.html).
 
 The files use data from the `data` directory. This folder contains a `readme.txt` file which describes how the data can be downloaded. The first approach is recommended, since it downloads both the original and processed files. If the second approach is preferred, the notebook in `feature_engineering/Stem_Word_Embeddings` contains tools to stem the GloVe models and also a script to convert it to the word2vec format.
 
